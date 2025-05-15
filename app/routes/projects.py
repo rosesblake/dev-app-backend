@@ -1,0 +1,14 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from app import schemas, crud, models
+from app.dependencies import get_db
+
+router = APIRouter(prefix="/projects", tags=["projects"])
+
+@router.post("/", response_model=schemas.ProjectRead)
+def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)):
+    return crud.create_project(db, project)
+
+@router.get("/", response_model=list[schemas.ProjectRead])
+def list_projects(db: Session = Depends(get_db)):
+    return db.query(models.Project).all()
