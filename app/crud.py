@@ -1,8 +1,16 @@
 from sqlalchemy.orm import Session
 from app import models, schemas
 from passlib.context import CryptContext
+from app.auth import verify_password
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def authenticate_user(db: Session, email: str, password: str):
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user or not verify_password(password, user.hashed_password):
+        return None
+    return user
+
 
 def hash_password(password: str):
     return pwd_context.hash(password)
