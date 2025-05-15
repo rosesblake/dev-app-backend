@@ -1,13 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import schemas, crud
+from app import schemas, crud, models
+from app.auth import get_current_user
 from app.dependencies import get_db
 
 router = APIRouter(prefix="/messages", tags=["messages"])
 
 @router.post("/", response_model=schemas.MessageRead)
-def send_message(message: schemas.MessageCreate, db: Session = Depends(get_db)):
-    return crud.create_message(db, message)
+def send_message(
+    message: schemas.MessageCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    message_data = schemas.MessageCreate(
+        project_id=message.project_id,
+        sender_id=current_user.id,
+        receiver_id=message.receiver_id,
+        text=message.text
+    )
+    return crud.create_message(db, message_data)
 
 @router.get("/project/{project_id}", response_model=list[schemas.MessageRead])
 def get_project_messages(project_id: int, db: Session = Depends(get_db)):

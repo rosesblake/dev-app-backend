@@ -35,7 +35,7 @@ def create_user(db: Session, user: schemas.UserCreate):
 def get_users(db:Session):
     return db.query(models.User).all()
 
-def create_project(db: Session, project: schemas.ProjectCreate):
+def create_project(db: Session, project: schemas.ProjectCreate, creator_id: int):
     new_project = models.Project(
         title=project.title,
         description=project.description,
@@ -43,7 +43,8 @@ def create_project(db: Session, project: schemas.ProjectCreate):
         roles_needed=project.roles_needed,
         commitment_level=project.commitment_level,
         figma_url=str(project.figma_url) if project.figma_url else None,
-        github_repo=str(project.github_repo) if project.github_repo else None
+        github_repo=str(project.github_repo) if project.github_repo else None,
+        creator_id=creator_id
     )
     db.add(new_project)
     db.commit()
