@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app import schemas, crud, models, auth
 from app.dependencies import get_db
 
@@ -16,4 +16,4 @@ def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)
 
 @router.get("/", response_model=list[schemas.ProjectRead])
 def list_projects(db: Session = Depends(get_db)):
-    return db.query(models.Project).all()
+    return db.query(models.Project).options(joinedload(models.Project.creator)).all()

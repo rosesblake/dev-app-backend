@@ -38,6 +38,7 @@ class ProjectCreate(ProjectBase):
 class ProjectRead(ProjectCreate):
     id: int
     created_at: datetime
+    creator: UserRead
 
     class Config:
         orm_mode = True
