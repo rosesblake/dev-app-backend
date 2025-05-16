@@ -17,3 +17,15 @@ def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db)
 @router.get("/", response_model=list[schemas.ProjectRead])
 def list_projects(db: Session = Depends(get_db)):
     return db.query(models.Project).options(joinedload(models.Project.creator)).all()
+
+@router.get("/{slug}", response_model=schemas.ProjectRead)
+def get_project_by_slug(slug: str, db: Session = Depends(get_db)):
+    project = (
+        db.query(models.Project)
+        .options(joinedload(models.Project.creator))
+        .filter(models.Project.slug == slug)
+        .first()
+    )
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
