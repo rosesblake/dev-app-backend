@@ -17,10 +17,11 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
+    slug: str
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ProjectBase(BaseModel):
@@ -37,11 +38,12 @@ class ProjectCreate(ProjectBase):
 
 class ProjectRead(ProjectCreate):
     id: int
+    slug: str
     created_at: datetime
     creator: UserRead
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ApplicationBase(BaseModel):
@@ -57,7 +59,7 @@ class ApplicationRead(ApplicationBase):
     applied_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MessageBase(BaseModel):
     project_id: int
@@ -73,4 +75,4 @@ class MessageRead(MessageBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

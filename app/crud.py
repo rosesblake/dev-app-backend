@@ -15,10 +15,31 @@ def authenticate_user(db: Session, email: str, password: str):
 def hash_password(password: str):
     return pwd_context.hash(password)
 
+def generate_unique_slug(db: Session, title: str, model) -> str:
+    base_slug = (
+        title.lower()
+        .strip()
+        .replace(" ", "-")
+        .replace("_", "-")
+    )
+
+    slug = base_slug
+    count = 1
+
+    while db.query(model).filter_by(slug=slug).first():
+        slug = f"{base_slug}-{count}"
+        count += 1
+
+    return slug
+
+
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_pw = hash_password(user.password)
+    slug = generate_unique_slug(db, user.name, models.User)
+
     new_user = models.User(
         name=user.name,
+        slug=slug,
         email=user.email,
         role=user.role,
         bio=user.bio,
@@ -36,8 +57,11 @@ def get_users(db:Session):
     return db.query(models.User).all()
 
 def create_project(db: Session, project: schemas.ProjectCreate, creator_id: int):
+    slug = generate_unique_slug(db, project.title, models.Project)
+    
     new_project = models.Project(
         title=project.title,
+        slug=slug,
         description=project.description,
         stack=project.stack,
         roles_needed=project.roles_needed,

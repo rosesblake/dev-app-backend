@@ -8,6 +8,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    slug = Column(String, unique=True, index=True) 
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(ARRAY(String))
@@ -29,6 +30,7 @@ class Project(Base):
     id = Column(Integer, primary_key=True, index=True)
     creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
+    slug = Column(String, unique=True, index=True) 
     description = Column(Text, nullable=False)
     stack = Column(ARRAY(String))
     roles_needed = Column(ARRAY(String))
