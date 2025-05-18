@@ -12,12 +12,15 @@ def apply_to_project(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    application_data = schemas.ApplicationCreate(
-        project_id=application.project_id,
-        user_id=current_user.id,
-        status=application.status
-    )
-    return crud.create_application(db, application_data)
+    existing = db.query(models.Application).filter(
+        models.Application.project_id == application.project_id,
+        models.Application.user_id == current_user.id
+    ).first()
+
+    if existing:
+        raise HTTPException(status_code=400, detail="Already applied")
+
+    return crud.create_application(db, application, user_id=current_user.id)
 
 @router.get("/project/{project_id}", response_model=list[schemas.ApplicationRead])
 def get_applications_for_project(project_id: int, db: Session = Depends(get_db)):

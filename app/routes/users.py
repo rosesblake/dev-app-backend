@@ -10,7 +10,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     existing = db.query(models.User).filter(models.User.email == user.email).first()
     if existing:
+        print(True)
         raise HTTPException(status_code=400, detail="Email already registered")
+    
     return crud.create_user(db, user)
 
 @router.get("/", response_model=list[schemas.UserRead])

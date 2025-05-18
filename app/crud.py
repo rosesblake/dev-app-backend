@@ -36,7 +36,6 @@ def generate_unique_slug(db: Session, title: str, model) -> str:
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_pw = hash_password(user.password)
     slug = generate_unique_slug(db, user.name, models.User)
-
     new_user = models.User(
         name=user.name,
         slug=slug,
@@ -78,16 +77,17 @@ def create_project(db: Session, project: schemas.ProjectCreate, creator_id: int)
 def get_projects(db:Session):
     return db.query(models.Project).all()
 
-def create_application(db: Session, app: schemas.ApplicationCreate):
+def create_application(db: Session, app: schemas.ApplicationCreate, user_id: int):
     new_app = models.Application(
         project_id=app.project_id,
-        user_id=app.user_id,
+        user_id=user_id, 
         status=app.status
     )
     db.add(new_app)
     db.commit()
     db.refresh(new_app)
     return new_app
+
 
 def get_applications_for_project(db: Session, project_id: int):
     return db.query(models.Application).filter_by(project_id=project_id).all()

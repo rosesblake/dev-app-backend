@@ -34,8 +34,6 @@ def login(
 
     return {"access_token": access_token, "token_type": "bearer"}
 
-from fastapi import Request
-
 @router.post("/refresh", response_model=dict)
 def refresh_token(
     request: Request,

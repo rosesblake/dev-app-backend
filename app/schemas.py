@@ -48,14 +48,14 @@ class ProjectRead(ProjectCreate):
 
 class ApplicationBase(BaseModel):
     project_id: int
-    user_id: int
-    status: str = "pending"
+    status: Optional[str] = "pending"
 
 class ApplicationCreate(ApplicationBase):
     pass
 
 class ApplicationRead(ApplicationBase):
     id: int
+    user_id: int
     applied_at: datetime
 
     class Config:

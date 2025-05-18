@@ -54,6 +54,29 @@ def seed():
         figma_url="https://figma.com/file/devmatch"
     ), creator_id=user2.id)
 
+    crud.create_project(
+    db,
+    schemas.ProjectCreate(
+        title="DevBuddy",
+        description=(
+            "DevBuddy is a gamified accountability platform where developers track daily goals, "
+            "build momentum, and raise a virtual sidekick that evolves based on user consistency. "
+            "It includes habit tracking, collaborative progress boards, and unlockable customizations. "
+            "The project is designed to keep developers motivated while working on side projects or learning new skills."
+        ),
+        stack=[
+            "Next.js", "Tailwind CSS", "TypeScript", "Zustand", "FastAPI", 
+            "PostgreSQL", "Prisma", "Framer Motion", "Stripe", "tRPC"
+        ],
+        roles_needed=["Fullstack", "Frontend", "Backend", "UI/UX", "Product Manager"],
+        commitment_level="Light",
+        github_repo="https://github.com/example/devbuddy",
+        figma_url="https://www.figma.com/file/devbuddy-design"
+    ),
+    creator_id=user2.id
+)
+
+
     print("🌱 Database seeded.")
 
 if __name__ == "__main__":
