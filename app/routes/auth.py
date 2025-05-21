@@ -82,5 +82,6 @@ def logout(response: Response):
         httponly=True,
         secure=not IS_DEV,
         samesite="lax" if IS_DEV else "none",
-        )
-    return Response(status_code=204)
+    )
+    response.status_code = 204
+    return response  
