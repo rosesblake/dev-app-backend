@@ -62,6 +62,9 @@ class ApplicationRead(ApplicationBase):
 
     class Config:
         from_attributes = True
+        
+class StatusUpdate(BaseModel):
+    status: str
 
 class MessageBase(BaseModel):
     project_id: int

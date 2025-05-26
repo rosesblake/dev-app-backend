@@ -95,6 +95,17 @@ def get_applications_for_project(db: Session, project_id: int):
 def get_applications_for_user(db: Session, user_id: int):
     return db.query(models.Application).filter_by(user_id=user_id).all()
 
+def update_application_status(db: Session, application_id: int, new_status: str):
+    application = db.query(models.Application).filter_by(id=application_id).first()
+
+    if not application:
+        return None
+
+    application.status = new_status
+    db.commit()
+    db.refresh(application)
+    return application
+
 def create_message(db: Session, msg: schemas.MessageCreate):
     new_msg = models.Message(
         project_id=msg.project_id,

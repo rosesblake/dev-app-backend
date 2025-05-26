@@ -23,6 +23,20 @@ def apply_to_project(
 
     return crud.create_application(db, application, user_id=current_user.id)
 
+@router.post("/update/{application_id}", response_model=schemas.ApplicationRead)
+def update_application_status(
+    application_id: int,
+    status_update: schemas.StatusUpdate,
+    db: Session = Depends(get_db)
+):
+    application = crud.update_application_status(db, application_id, status_update.status)
+    
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+    
+    return application
+
+
 @router.get("/project/{project_id}", response_model=list[schemas.ApplicationRead])
 def get_applications_for_project(project_id: int, db: Session = Depends(get_db)):
     return crud.get_applications_for_project(db, project_id)
@@ -39,3 +53,4 @@ def get_applications_to_users_projects(user_id: int, db: Session = Depends(get_d
         .filter(models.Project.creator_id == user_id)
         .all()
     )
+
