@@ -115,3 +115,11 @@ def get_messages_between_users(db: Session, user1_id: int, user2_id: int):
         ((models.Message.sender_id == user1_id) & (models.Message.receiver_id == user2_id)) |
         ((models.Message.sender_id == user2_id) & (models.Message.receiver_id == user1_id))
     ).all()
+
+def get_applications_to_users_projects(db: Session, user_id: int):
+    return (
+        db.query(models.Application)
+        .join(models.Project, models.Application.project_id == models.Project.id)
+        .filter(models.Project.creator_id == user_id)
+        .all()
+    )

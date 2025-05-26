@@ -57,6 +57,8 @@ class ApplicationRead(ApplicationBase):
     id: int
     user_id: int
     applied_at: datetime
+    project: ProjectRead
+    user: UserRead
 
     class Config:
         from_attributes = True

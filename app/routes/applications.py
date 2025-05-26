@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 from app import schemas, crud, models
 from app.dependencies import get_db
 from app.auth import get_current_user
@@ -29,3 +30,12 @@ def get_applications_for_project(project_id: int, db: Session = Depends(get_db))
 @router.get("/user/{user_id}", response_model=list[schemas.ApplicationRead])
 def get_applications_for_user(user_id: int, db: Session = Depends(get_db)):
     return crud.get_applications_for_user(db, user_id)
+
+@router.get("/received/{user_id}", response_model=List[schemas.ApplicationRead])
+def get_applications_to_users_projects(user_id: int, db: Session = Depends(get_db)):
+    return (
+        db.query(models.Application)
+        .join(models.Project)
+        .filter(models.Project.creator_id == user_id)
+        .all()
+    )
