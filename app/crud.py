@@ -106,10 +106,10 @@ def update_application_status(db: Session, application_id: int, new_status: str)
     db.refresh(application)
     return application
 
-def create_message(db: Session, msg: schemas.MessageCreate):
+def create_message(db: Session, sender_id: int, msg: schemas.MessageCreate):
     new_msg = models.Message(
         project_id=msg.project_id,
-        sender_id=msg.sender_id,
+        sender_id=sender_id,
         receiver_id=msg.receiver_id,
         text=msg.text
     )
@@ -117,6 +117,7 @@ def create_message(db: Session, msg: schemas.MessageCreate):
     db.commit()
     db.refresh(new_msg)
     return new_msg
+
 
 def get_messages_for_project(db: Session, project_id: int):
     return db.query(models.Message).filter_by(project_id=project_id).all()
@@ -134,3 +135,28 @@ def get_applications_to_users_projects(db: Session, user_id: int):
         .filter(models.Project.creator_id == user_id)
         .all()
     )
+
+def get_conversations(db: Session, user_id: int):
+    messages = db.query(models.Message).filter(
+        (models.Message.sender_id == user_id) | (models.Message.receiver_id == user_id)
+    ).order_by(models.Message.created_at.desc()).all()
+
+    seen = set()
+    conversations = []
+
+    for msg in messages:
+        other_user = msg.receiver if msg.sender_id == user_id else msg.sender
+        key = (other_user.id, msg.project_id)
+
+        if key not in seen:
+            seen.add(key)
+            conversations.append({
+                "userId": other_user.id,
+                "userName": other_user.name,
+                "projectId": msg.project.id,
+                "projectTitle": msg.project.title,
+                "lastMessage": msg.text,
+                "updatedAt": msg.created_at,
+            })
+
+    return conversations

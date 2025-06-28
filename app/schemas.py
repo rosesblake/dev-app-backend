@@ -81,3 +81,11 @@ class MessageRead(MessageBase):
 
     class Config:
         from_attributes = True
+
+class Conversation(BaseModel):
+    userId: int
+    userName: str
+    projectId: int
+    projectTitle: str
+    lastMessage: str
+    updatedAt: datetime
