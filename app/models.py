@@ -71,10 +71,3 @@ class Message(Base):
     sender = relationship("User", foreign_keys=[sender_id], overlaps="sent_messages")
     receiver = relationship("User", foreign_keys=[receiver_id], overlaps="received_messages")
 
-class Conversation(BaseModel):
-    userId: int
-    userName: str
-    projectId: int
-    projectTitle: str
-    lastMessage: str
-    updatedAt: datetime
